@@ -5,6 +5,10 @@ function Login({ onLogin }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isSignup, setIsSignup] = useState(false)
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [gender, setGender] = useState("Male")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -12,20 +16,83 @@ function Login({ onLogin }) {
     setLoading(true)
     setError("")
 
-    const { error } = isSignup
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password })
+    if (isSignup) {
+      // 1. Create auth account
+      const { data, error: signupError } = await supabase.auth.signUp({ email, password })
 
-    if (error) setError(error.message)
-    else onLogin()
+      if (signupError) {
+        setError(signupError.message)
+        setLoading(false)
+        return
+      }
+
+      // 2. Insert into passengers table
+      const { error: passengerError } = await supabase
+        .from("passengers")
+        .insert({
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          phone: phone,
+          gender: gender,
+        })
+
+      if (passengerError) {
+        setError(passengerError.message)
+        setLoading(false)
+        return
+      }
+
+      onLogin()
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) setError(error.message)
+      else onLogin()
+    }
+
     setLoading(false)
   }
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>AirReserve</h2>
+        <h2 style={styles.title}>✈️ AirReserve</h2>
         <p style={styles.subtitle}>{isSignup ? "Create an account" : "Sign in to your account"}</p>
+
+        {isSignup && (
+          <>
+            <input
+              style={styles.input}
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <input
+              style={styles.input}
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <input
+              style={styles.input}
+              type="text"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <select
+              style={styles.input}
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </>
+        )}
 
         <input
           style={styles.input}
