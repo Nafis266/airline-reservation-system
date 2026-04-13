@@ -11,6 +11,8 @@ function Login({ onLogin }) {
   const [gender, setGender] = useState("Male")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [dob, setDob] = useState("")
+  const [passnum, setPassnum] = useState("")
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -35,6 +37,8 @@ function Login({ onLogin }) {
           email: email,
           phone: phone,
           gender: gender,
+          date_of_birth: dob,
+          passport_number: passnum,
         })
 
       if (passengerError) {
@@ -91,9 +95,27 @@ function Login({ onLogin }) {
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
+
+            <input
+              style={styles.input}
+              type="date"
+              placeholder="date of birth"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+            />
+
+            <input
+              style={styles.input}
+              type="text"
+              placeholder="Passport number"
+              value={passnum}
+              onChange={(e) => setPassnum(e.target.value)}
+            />
+
           </>
         )}
 
+       
         <input
           style={styles.input}
           type="email"

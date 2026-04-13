@@ -55,12 +55,12 @@ function FlightList() {
     <div style={{ padding: "30px", fontFamily: "Arial" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <h1 style={{ color: "#003580" }}>Available Flights</h1>
-        <button onClick={handleLogout} style={{ padding: "8px 16px", backgroundColor: "#dc3545", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}>
+        <button onClick={handleLogout} style={{ padding: "8px 16px", backgroundColor: "#dc3545", color: "white", border: "none",cursor: "pointer" }}>
           Logout
         </button>
       </div>
 
-      {booked && <p style={{ backgroundColor: "#d4edda", padding: "12px", borderRadius: "8px", color: "#155724" }}>✅ Flight booked successfully!</p>}
+      {booked && <p style={{ backgroundColor: "#d4edda", padding: "12px", color: "#155724" }}>Flight booked successfully!</p>}
 
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead style={{ backgroundColor: "#003580", color: "white" }}>
