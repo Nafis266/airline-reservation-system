@@ -1,18 +1,27 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../config/supabaseClient"
+import Payment from "./Payment"
 
-function BookFlight({ flight, onBack, onBooked }) {
+function BookFlight({ flight, onBack, onBooked, onSkipped}) {
   const [passengerId, setPassengerId] = useState(null)
   const [seatNumber, setSeatNumber] = useState("")
   const [seatClassId, setSeatClassId] = useState("1")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [bookingData, setBookingData] = useState(null)
 
-  // Auto-fetch passenger ID based on logged-in email
+  const seatClasses = {
+    "1": { name: "Economy", price: 5000 },
+    "2": { name: "Business", price: 12000 },
+    "3": { name: "First Class", price: 20000 },
+    "4": { name: "Premium Economy", price: 8000 },
+    "5": { name: "Luxury", price: 25000 },
+    "6": { name: "Budget", price: 3000 },
+  }
+
   useEffect(() => {
     async function fetchPassenger() {
       const { data: { user } } = await supabase.auth.getUser()
-
       const { data, error } = await supabase
         .from("passengers")
         .select("passenger_id")
@@ -22,18 +31,34 @@ function BookFlight({ flight, onBack, onBooked }) {
       if (error) setError("No passenger found for this account.")
       else setPassengerId(data.passenger_id)
     }
-
     fetchPassenger()
   }, [])
 
   const handleBook = async () => {
-    if (!passengerId) {
-      setError("No passenger linked to this account.")
-      return
-    }
+    if (!passengerId) { setError("No passenger linked to this account."); return }
+    if (!seatNumber) { setError("Please enter a seat number."); return }
 
     setLoading(true)
     setError("")
+
+    const { data: existingTickets } = await supabase
+      .from("tickets")
+      .select(`
+        ticket_id,
+        seat_number,
+        bookings!fk_ticket_booking (
+          schedule_id
+        )
+      `)
+      .eq("seat_number", seatNumber)
+
+    const isTaken = existingTickets?.some(t => t.bookings?.schedule_id === flight.schedule_id)
+
+    if (isTaken) {
+      setError("This seat is already taken for this flight. Please choose another seat.")
+      setLoading(false)
+      return
+    }
 
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
@@ -52,19 +77,43 @@ function BookFlight({ flight, onBack, onBooked }) {
       return
     }
 
+    const selectedClass = seatClasses[seatClassId]
+
     const { error: ticketError } = await supabase
       .from("tickets")
       .insert({
         booking_id: booking.booking_id,
         seat_number: seatNumber,
         seat_class_id: parseInt(seatClassId),
-        ticket_price: 5000
+        ticket_price: selectedClass.price
       })
 
-    if (ticketError) setError(ticketError.message)
-    else onBooked()
+    if (ticketError) {
+      setError(ticketError.message)
+      setLoading(false)
+      return
+    }
+
+    setBookingData({
+      booking_id: booking.booking_id,
+      flight_number: flight.flights.flight_number,
+      from: `${flight.flights.source.city} (${flight.flights.source.airport_code})`,
+      to: `${flight.flights.destination.city} (${flight.flights.destination.airport_code})`,
+      seat_number: seatNumber,
+      class_name: selectedClass.name,
+      ticket_price: selectedClass.price
+    })
+
     setLoading(false)
   }
+
+  if (bookingData) return (
+    <Payment
+      booking={bookingData}
+      onPaid={onBooked}
+      onSkip={onSkipped}
+    />
+  )
 
   return (
     <div style={styles.container}>
@@ -91,12 +140,9 @@ function BookFlight({ flight, onBack, onBooked }) {
           value={seatClassId}
           onChange={(e) => setSeatClassId(e.target.value)}
         >
-          <option value="1">Economy</option>
-          <option value="2">Business</option>
-          <option value="3">First Class</option>
-          <option value="4">Premium Economy</option>
-          <option value="5">Luxury</option>
-          <option value="6">Budget</option>
+          {Object.entries(seatClasses).map(([id, { name, price }]) => (
+            <option key={id} value={id}>{name} - ₹{price}</option>
+          ))}
         </select>
 
         {error && <p style={styles.error}>{error}</p>}

@@ -45,6 +45,7 @@ function FlightList() {
       flight={selectedFlight}
       onBack={() => setSelectedFlight(null)}
       onBooked={() => { setSelectedFlight(null); setBooked(true) }}
+      onSkipped={() => {setSelectedFlight(null) }}
     />
   )
 
