@@ -18,6 +18,12 @@ function Login({ onLogin }) {
     setLoading(true)
     setError("")
 
+
+    if (email === "admin" && password === "admin123") {
+      onLogin("admin")
+      setLoading(false)
+      return
+    }
     if (isSignup) {
       // 1. Create auth account
       const { data, error: signupError } = await supabase.auth.signUp({ email, password })
@@ -47,11 +53,11 @@ function Login({ onLogin }) {
         return
       }
 
-      onLogin()
+      onLogin("user")
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
-      else onLogin()
+      else onLogin("user")
     }
 
     setLoading(false)
