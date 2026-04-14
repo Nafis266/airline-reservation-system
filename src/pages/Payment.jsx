@@ -84,23 +84,20 @@ function Payment({ booking, onPaid, onSkip }) {
           {loading ? "Processing..." : `Pay ₹${booking.ticket_price}`}
         </button>
 
-        <button style={styles.skipButton} onClick={onSkip}>
-          Pay Later
-        </button>
       </div>
     </div>
   )
 }
 
 const styles = {
-  container: { display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f0f4f8" },
-  card: { backgroundColor: "white", padding: "40px", borderRadius: "12px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", width: "400px" },
-  title: { color: "#003580", marginBottom: "16px", textAlign: "center" },
-  info: { backgroundColor: "#f8f9fa", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" },
-  input: { width: "100%", padding: "10px", marginBottom: "12px", borderRadius: "8px", border: "1px solid #ddd", fontSize: "14px", boxSizing: "border-box" },
-  button: { width: "100%", padding: "12px", backgroundColor: "#003580", color: "white", border: "none", borderRadius: "8px", fontSize: "16px", cursor: "pointer", marginBottom: "10px" },
-  skipButton: { width: "100%", padding: "12px", backgroundColor: "white", color: "#003580", border: "1px solid #003580", borderRadius: "8px", fontSize: "16px", cursor: "pointer" },
-  error: { color: "red", fontSize: "13px", marginBottom: "10px" }
+  container: { display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#003580" },
+  card: { backgroundColor: "#001f4d", padding: "40px", borderRadius: "12px", boxShadow: "0 4px 20px rgba(0,0,0,0.4)", width: "400px" },
+  title: { color: "white", marginBottom: "16px", textAlign: "center" },
+  info: { backgroundColor: "#002766", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px", color: "#ccd9ff" },
+  input: { width: "100%", padding: "10px", marginBottom: "12px", borderRadius: "8px", border: "1px solid #1a3a6b", backgroundColor: "#002766", color: "white", fontSize: "14px", boxSizing: "border-box" },
+  button: { width: "100%", padding: "12px", backgroundColor: "#1a56db", color: "white", border: "none", borderRadius: "8px", fontSize: "16px", cursor: "pointer" },
+  error: { color: "#ff6b6b", fontSize: "13px", marginBottom: "10px" },
+  back: { background: "none", border: "none", color: "#7ab3ff", cursor: "pointer", fontSize: "14px", marginBottom: "16px", padding: 0 }
 }
 
 export default Payment
