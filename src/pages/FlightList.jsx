@@ -61,7 +61,6 @@ function FlightList() {
         </button>
       </div>
 
-      {booked && <p style={{ backgroundColor: "#d4edda", padding: "12px", color: "#155724" }}>Flight booked successfully!</p>}
 
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead style={{ backgroundColor: "#003580", color: "white" }}>

@@ -6,12 +6,11 @@ function AdminPanel({ onLogout }) {
 
   const [flights, setFlights] = useState([])
   const [airports, setAirports] = useState([])
-  const [newFlight, setNewFlight] = useState({ flight_number: "", source_airport_id: "", destination_airport_id: "", aircraft_type: "" })
+  const [newFlight, setNewFlight] = useState({ flight_id: "", flight_number: "", source_airport_id: "", destination_airport_id: "", aircraft_type: "" })
 
   const [schedules, setSchedules] = useState([])
   const [newSchedule, setNewSchedule] = useState({ flight_id: "", departure_time: "", arrival_time: "", schedule_date: "", status: "On Time" })
 
-  const [message, setMessage] = useState("")
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -39,7 +38,7 @@ function AdminPanel({ onLogout }) {
     setError(""); setMessage("")
     const { error } = await supabase.from("flights").insert(newFlight)
     if (error) setError(error.message)
-    else { setMessage("Flight added!"); setNewFlight({ flight_number: "", source_airport_id: "", destination_airport_id: "", aircraft_type: "" }); fetchAll() }
+    else {setNewFlight({ flight_number: "", source_airport_id: "", destination_airport_id: "", aircraft_type: "" }); fetchAll() }
   }
 
   async function addSchedule() {
@@ -52,19 +51,19 @@ function AdminPanel({ onLogout }) {
       schedule_date: new Date(newSchedule.schedule_date).toISOString(),
     })
     if (error) setError(error.message)
-    else { setMessage("Schedule added!"); setNewSchedule({ flight_id: "", departure_time: "", arrival_time: "", schedule_date: "", status: "On Time" }); fetchAll() }
+    else {setNewSchedule({ flight_id: "", departure_time: "", arrival_time: "", schedule_date: "", status: "On Time" }); fetchAll() }
   }
 
   async function deleteFlight(id) {
     const { error } = await supabase.from("flights").delete().eq("flight_id", id)
     if (error) setError(error.message)
-    else { setMessage("Flight deleted!"); fetchAll() }
+    else {fetchAll() }
   }
 
   async function deleteSchedule(id) {
     const { error } = await supabase.from("flight_schedule").delete().eq("schedule_id", id)
     if (error) setError(error.message)
-    else { setMessage("Schedule deleted!"); fetchAll() }
+    else {fetchAll() }
   }
 
   return (
@@ -90,7 +89,6 @@ function AdminPanel({ onLogout }) {
         ))}
       </div>
 
-      {message && <p style={{ backgroundColor: "#d4edda", padding: "10px", color: "#155724", borderRadius: "6px", marginBottom: "16px" }}>{message}</p>}
       {error && <p style={{ backgroundColor: "#f8d7da", padding: "10px", color: "#721c24", borderRadius: "6px", marginBottom: "16px" }}>{error}</p>}
 
       {tab === "flights" && (
@@ -98,6 +96,7 @@ function AdminPanel({ onLogout }) {
           <div style={styles.formCard}>
             <h3 style={styles.formTitle}>Add New Flight</h3>
             <div style={styles.formRow}>
+              <input style={styles.input} placeholder="Flight ID (e.g 101)" value={newFlight.flight_id} onChange={e => setNewFlight({ ...newFlight, flight_id: e.target.value})} />
               <input style={styles.input} placeholder="Flight Number (e.g. AI101)" value={newFlight.flight_number} onChange={e => setNewFlight({ ...newFlight, flight_number: e.target.value })} />
               <input style={styles.input} placeholder="Aircraft Type (e.g. Boeing 737)" value={newFlight.aircraft_type} onChange={e => setNewFlight({ ...newFlight, aircraft_type: e.target.value })} />
             </div>
@@ -117,6 +116,7 @@ function AdminPanel({ onLogout }) {
           <table style={styles.table}>
             <thead style={{ backgroundColor: "#002766", color: "white" }}>
               <tr>
+                <th style={th}>Flight ID</th>
                 <th style={th}>Flight No.</th>
                 <th style={th}>From</th>
                 <th style={th}>To</th>
@@ -127,6 +127,7 @@ function AdminPanel({ onLogout }) {
             <tbody>
               {flights.map(f => (
                 <tr key={f.flight_id} style={styles.row}>
+                  <td style={td}>{f.flight_id}</td>
                   <td style={td}>{f.flight_number}</td>
                   <td style={td}>{f.source.city} ({f.source.airport_code})</td>
                   <td style={td}>{f.destination.city} ({f.destination.airport_code})</td>
