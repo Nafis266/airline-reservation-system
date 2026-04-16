@@ -157,11 +157,11 @@ function BookFlight({ flight, onBack, onBooked, onSkipped}) {
 
 const styles = {
   container: { display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#003580" },
-  card: { backgroundColor: "#001f4d", padding: "40px", borderRadius: "12px", boxShadow: "0 4px 20px rgba(0,0,0,0.4)", width: "400px" },
+  card: { backgroundColor: "#001f4d", padding: "40px",boxShadow: "0 4px 20px rgba(0,0,0,0.4)", width: "400px" },
   title: { color: "white", marginBottom: "16px", textAlign: "center" },
-  info: { backgroundColor: "#002766", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px", color: "#ccd9ff" },
-  input: { width: "100%", padding: "10px", marginBottom: "12px", borderRadius: "8px", border: "1px solid #1a3a6b", backgroundColor: "#002766", color: "white", fontSize: "14px", boxSizing: "border-box" },
-  button: { width: "100%", padding: "12px", backgroundColor: "#1a56db", color: "white", border: "none", borderRadius: "8px", fontSize: "16px", cursor: "pointer" },
+  info: { backgroundColor: "#002766", padding: "12px",marginBottom: "20px", fontSize: "14px", color: "#ccd9ff" },
+  input: { width: "100%", padding: "10px", marginBottom: "12px", border: "1px solid #1a3a6b", backgroundColor: "#002766", color: "white", fontSize: "14px", boxSizing: "border-box" },
+  button: { width: "100%", padding: "12px", backgroundColor: "#1a56db", color: "white", border: "none", fontSize: "16px", cursor: "pointer" },
   error: { color: "#ff6b6b", fontSize: "13px", marginBottom: "10px" },
   back: { background: "none", border: "none", color: "#7ab3ff", cursor: "pointer", fontSize: "14px", marginBottom: "16px", padding: 0 }
 }
