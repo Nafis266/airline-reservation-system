@@ -221,6 +221,9 @@ function AdminPanel({ onLogout }) {
               </tr>
             </thead>
             <tbody>
+              {flights.length === 0 && (
+                <tr><td colSpan={5} style={{ ...td, textAlign: "center", color: "#666" }}>No flights found.</td></tr>
+              )}
               {flights.map(f => (
                 <tr key={f.flight_id} style={styles.row}>
                   <td style={td}>{f.flight_id}</td>
@@ -276,18 +279,15 @@ function AdminPanel({ onLogout }) {
               </tr>
             </thead>
             <tbody>
+              {schedules.length === 0 && (
+                <tr><td colSpan={5} style={{ ...td, textAlign: "center", color: "#666" }}>No schedules found.</td></tr>
+              )}
               {schedules.map(s => (
                 <tr key={s.schedule_id} style={styles.row}>
                   <td style={td}>{s.flights.flight_number}</td>
                   <td style={td}>{new Date(s.departure_time).toLocaleString()}</td>
                   <td style={td}>{new Date(s.arrival_time).toLocaleString()}</td>
-                  <td style={td}>
-                    <span style={{
-                      padding: "3px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: "bold",
-                      backgroundColor: s.status === "On Time" ? "#d4edda" : s.status === "Delayed" ? "#fff3cd" : "#f8d7da",
-                      color: s.status === "On Time" ? "#155724" : s.status === "Delayed" ? "#856404" : "#721c24"
-                    }}>{s.status}</span>
-                  </td>
+                  <td style={td}>{s.status}</td>
                   <td style={td}><button onClick={() => deleteSchedule(s.schedule_id)} style={styles.deleteBtn}>Delete</button></td>
                 </tr>
               ))}

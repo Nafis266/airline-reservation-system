@@ -18,14 +18,7 @@ function Login({ onLogin }) {
     setLoading(true)
     setError("")
 
-
-    if (email === "admin" && password === "admin123") {
-      onLogin("admin")
-      setLoading(false)
-      return
-    }
     if (isSignup) {
-      // 1. Create auth account
       const { data, error: signupError } = await supabase.auth.signUp({ email, password })
 
       if (signupError) {
@@ -34,7 +27,6 @@ function Login({ onLogin }) {
         return
       }
 
-      // 2. Insert into passengers table
       const { error: passengerError } = await supabase
         .from("passengers")
         .insert({
@@ -54,10 +46,33 @@ function Login({ onLogin }) {
       }
 
       onLogin("user")
+
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) setError(error.message)
-      else onLogin("user")
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error){
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+      const user = data.user
+      const { data: admindata, error: adminerror } = await supabase
+      .from("admins")
+      .select("uid")
+      .eq("uid",user.id)
+      .maybeSingle()
+
+      if(adminerror){
+        setError(adminerror.message)
+        setLoading(false)
+        return
+      }
+
+      if(admindata){
+        onLogin("admin")
+      }else{
+        onLogin("user")
+      }
+
     }
 
     setLoading(false)
